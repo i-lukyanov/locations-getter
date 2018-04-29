@@ -1,0 +1,28 @@
+parameters:
+    i_lukyanov.locations_getter.base_uri: 'http://pj5kq.mocklab.io/'
+
+services:
+    i_lukyanov.locations_getter.source:
+        class: ILukyanov\LocationsGetterBundle\Source\Source
+        arguments:
+            - '@i_lukyanov.locations_getter.transport.guzzle'
+            - '@i_lukyanov.locations_getter.response_parser'
+
+    i_lukyanov.locations_getter.transport.guzzle:
+        class: ILukyanov\LocationsGetterBundle\Transport\GuzzleTransport
+        arguments:
+            - '@i_lukyanov.locations_getter.guzzle.client'
+
+    i_lukyanov.locations_getter.response_parser:
+        class: ILukyanov\LocationsGetterBundle\ResponseParser\ResponseParser
+        arguments:
+            - '@jms_serializer.serializer'
+            - '@validator'
+
+    i_lukyanov.locations_getter.guzzle.client:
+        class: GuzzleHttp\Client
+        arguments:
+            -
+                base_uri: '%i_lukyanov.locations_getter.base_uri%'
+                connect_timeout: 5
+                timeout: 30
